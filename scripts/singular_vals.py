@@ -1,40 +1,21 @@
 #!/usr/bin/python
 
+
 import sys
+import math
 import numpy as np
+import create_data_matrix as cr
+
+round_matrix = np.vectorize(lambda x : round(x,10))
 
 file = open(sys.argv[1])
-feature_dict = {} # format: { "feature": [list of review ids that contain feature]}
-n_reviews = 0
-for line in file:
-    cols = line.split(',')
-    review_id = int(cols[0])
-    if n_reviews < review_id+1: #add room for the review in the review array
-        n_reviews += 1
-    feature = cols[2]
-    opinion = float(cols[3])
-    if feature not in feature_dict:
-        feature_dict[feature] = []
-    feature_dict[feature].append((review_id,opinion))
-feature_vals = feature_dict.values()
-reviews = []
-for i in range(0,n_reviews):
-    r = [0]*2*len(feature_vals) #two columns each for pos/neg opinion
-    reviews.append(r)
-for i in range(0, len(feature_vals)):
-    occurs_in = feature_vals[i]
-    f_ind = 2*i
-    for (review_id, opinion) in occurs_in:
-        if opinion > 0:
-            reviews[review_id][f_ind] = opinion
-        elif opinion < 0:
-            reviews[review_id][f_ind+1] = opinion
-        #if opinion > 0:
-        #    reviews[review_id][f_ind] = 1
-        #elif opinion < 0:
-        #    reviews[review_id][f_ind+1] = 1
-feature_matrix = np.matrix(reviews)
-U, s, V = np.linalg.svd(feature_matrix)
-for val in s:
-    print val
-print "TOTAL REVIEWS:",len(reviews)
+double_cols = True if sys.argv[2] == "d" else False #if double_cols is true, then we have double columns for pos/neg features.
+processing_type = 0
+if sys.argv[3] == "raw": processing_type = 1
+elif sys.argv[3] == "mean": processing_type = 2
+elif sys.argv[3] == "norm": processing_type = 3
+feature_matrix = cr.create_data_matrix(file.readlines(), double_cols,processing_type)
+feature_matrix = round_matrix(feature_matrix)
+U, s, Vt = np.linalg.svd(feature_matrix)
+for ss in s:
+    print ss

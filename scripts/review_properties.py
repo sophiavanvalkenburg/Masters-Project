@@ -4,6 +4,7 @@ import sys
 
 fname = sys.argv[1]
 file = open(fname)
+n_reviews = 1
 curr_review = 0
 num_features = 0
 aggr_score = 0.0
@@ -17,11 +18,12 @@ for i in range(0,len(lines)):
         num_features += 1
         aggr_score += score
         if i == len(lines)-1:
-            print curr_review, num_features, abs(aggr_score/num_features)
+            print n_reviews,curr_review, num_features, abs(aggr_score/num_features)
     else:
-        print curr_review, num_features, abs(aggr_score/num_features)
+        print n_reviews,curr_review, num_features, abs(aggr_score/num_features)
         curr_review = r_id
+        n_reviews += 1
         num_features = 1
         aggr_score = score
         if i == len(lines)-1:
-            print curr_review, num_features, abs(aggr_score/num_features)
+            print n_reviews,curr_review, num_features, abs(aggr_score/num_features)

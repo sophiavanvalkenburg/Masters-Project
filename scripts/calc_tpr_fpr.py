@@ -18,6 +18,7 @@ for line in sys.stdin:
     ref = 0
     if line_count > test_index:
         ref = 1
+#    print line_count,ref
     if (threshold_greater and score > threshold) or ( not threshold_greater and score <= threshold):
         hyp = 1
     if ref == 0 and hyp == 0:
